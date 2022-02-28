@@ -1,4 +1,6 @@
-package ru.atm;
+package ru.atm.atm;
+
+import ru.atm.banknote.Banknote;
 
 import java.math.BigDecimal;
 import java.util.List;

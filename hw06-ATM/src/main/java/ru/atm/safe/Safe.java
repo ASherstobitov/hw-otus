@@ -1,4 +1,6 @@
-package ru.atm;
+package ru.atm.safe;
+
+import ru.atm.banknote.Banknote;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,7 +12,7 @@ public interface Safe {
 
     List<Banknote> giveMoney(String accountNumber, BigDecimal amount);
 
-    void showBalance();
+    void uploadBanknotes(Banknote banknote, Integer value);
 
     Map<Banknote, Integer> getSlots();
 }

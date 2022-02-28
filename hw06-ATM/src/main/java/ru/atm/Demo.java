@@ -1,11 +1,15 @@
 package ru.atm;
 
 
+import ru.atm.account.Account;
+import ru.atm.safe.Safe;
+import ru.atm.banknote.Banknote;
+import ru.atm.atm.atmImpl.SafeAtm;
+import ru.atm.safe.safeImpl.SimpleAtm;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.logging.Logger;
 
 public class Demo {
@@ -15,26 +19,22 @@ public class Demo {
     public static void main(String[] args) {
 
         List<Account> accounts = Arrays.asList(
-                new CardAccount("11111", new BigDecimal(50000), "rub"),
-                new CardAccount("22222", new BigDecimal(77500), "rub"),
-                new CardAccount("33333", new BigDecimal(1000), "rub"),
-                new CardAccount("44444", new BigDecimal(500), "rub")
+                new Account("11111", new BigDecimal(50000), "rub"),
+                new Account("22222", new BigDecimal(77500), "rub"),
+                new Account("33333", new BigDecimal(1000), "rub"),
+                new Account("44444", new BigDecimal(500), "rub")
         );
 
-        var slots = new TreeMap<Banknote, Integer>(
-                Comparator.comparing(Banknote::getCurrency)
-                .thenComparing(Banknote::getNote).reversed());
 
-        slots.put(new Banknote(100, "rub"), 100);
-        slots.put(new Banknote(500, "rub"), 100);
-        slots.put(new Banknote(1000, "rub"), 100);
-        slots.put(new Banknote(2000, "rub"), 100);
-        slots.put(new Banknote(5000, "rub"), 100);
-
-
-        Safe safe = new SafeAtm(slots);
+        Safe safe = new SafeAtm();
 
         SimpleAtm atm = new SimpleAtm(safe, accounts);
+
+        safe.uploadBanknotes(new Banknote(100, "rub"), 100);
+        safe.uploadBanknotes(new Banknote(500, "rub"), 100);
+        safe.uploadBanknotes(new Banknote(1000, "rub"), 100);
+        safe.uploadBanknotes(new Banknote(2000, "rub"), 100);
+        safe.uploadBanknotes(new Banknote(5000, "rub"), 100);
 
         atm.takeMoney("11111", Arrays.asList(
                 new Banknote(5000, "rub"),

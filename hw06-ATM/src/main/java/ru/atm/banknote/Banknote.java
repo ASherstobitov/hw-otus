@@ -1,4 +1,4 @@
-package ru.atm;
+package ru.atm.banknote;
 
 public class Banknote {
 
@@ -11,25 +11,12 @@ public class Banknote {
         this.currency = currency;
     }
 
-    private Banknote(Builder banknote) {
-        this.note = banknote.note;
-        this.currency = banknote.currency;
-    }
-
     public Integer getNote() {
         return note;
     }
 
-    public void setNote(Integer note) {
-        this.note = note;
-    }
-
     public String getCurrency() {
         return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
     }
 
     @Override
@@ -48,28 +35,6 @@ public class Banknote {
         int result = getNote() != null ? getNote().hashCode() : 0;
         result = 31 * result + (getCurrency() != null ? getCurrency().hashCode() : 0);
         return result;
-    }
-
-    public static class Builder {
-
-        private Integer note;
-
-        private String currency;
-
-        public Builder withNote(Integer note) {
-            this.note = note;
-            return this;
-        }
-
-        public Builder withCurrency(String currency) {
-            this.currency = currency;
-            return this;
-        }
-
-        public Banknote build() {
-            return new Banknote(this);
-        }
-
     }
 
     @Override

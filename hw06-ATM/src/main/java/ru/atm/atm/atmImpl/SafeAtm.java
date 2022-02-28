@@ -1,10 +1,11 @@
-package ru.atm;
+package ru.atm.atm.atmImpl;
+
+import ru.atm.banknote.Banknote;
+import ru.atm.exception.MyRuntimeException;
+import ru.atm.safe.Safe;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
@@ -12,10 +13,15 @@ public class SafeAtm implements Safe {
 
     private final Map<Banknote, Integer> slots;
 
+    private final Map<Banknote, Integer> tempSlots = new HashMap<>();
+
     private final Logger logger;
 
-    public SafeAtm(Map<Banknote, Integer> slots) {
-        this.slots = slots;
+    public SafeAtm() {
+        this.slots = new TreeMap<>(
+                Comparator.comparing(Banknote::getCurrency)
+                        .thenComparing(Banknote::getNote).reversed());
+
         this.logger = Logger.getLogger(SafeAtm.class.getName());
     }
 
@@ -31,8 +37,6 @@ public class SafeAtm implements Safe {
 
     @Override
     public List<Banknote> giveMoney(String accountNumber, BigDecimal amount) {
-
-        var tempSlots = new HashMap<Banknote, Integer>();
 
         var amountInt = amount.intValue();
 
@@ -53,28 +57,7 @@ public class SafeAtm implements Safe {
                 if (amountInt == 0) break;
             }
         }
-
         return getBanknotes(tempSlots);
-    }
-
-
-    private ArrayList<Banknote> getBanknotes(HashMap<Banknote, Integer> tempSlots) {
-        var tempList = new ArrayList<Banknote>();
-
-        tempSlots.forEach((k, v) -> {
-            IntStream.range(0, v).forEach(e -> tempList.add(k));
-        });
-        return tempList;
-    }
-
-    @Override
-    public void showBalance() {
-        if (this.slots != null) {
-            this.slots.forEach((key, value) ->
-                    logger.info(String.format("Slot name: %s count banknote: %d", key, value)));
-        } else {
-            throw new MyRuntimeException("Slots aren't init");
-        }
     }
 
     @Override
@@ -82,4 +65,17 @@ public class SafeAtm implements Safe {
         return this.slots;
     }
 
+    public void uploadBanknotes(Banknote banknote, Integer value) {
+        slots.put(banknote, value);
+    }
+
+
+    private List<Banknote> getBanknotes(Map<Banknote, Integer> tempSlots) {
+        var tempList = new ArrayList<Banknote>();
+
+        tempSlots.forEach((k, v) -> {
+            IntStream.range(0, v).forEach(e -> tempList.add(k));
+        });
+        return tempList;
+    }
 }
