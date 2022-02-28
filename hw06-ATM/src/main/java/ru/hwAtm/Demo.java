@@ -1,11 +1,11 @@
-package ru.atm;
+package ru.hwAtm;
 
 
-import ru.atm.account.Account;
-import ru.atm.safe.Safe;
-import ru.atm.banknote.Banknote;
-import ru.atm.atm.atmImpl.SafeAtm;
-import ru.atm.safe.safeImpl.SimpleAtm;
+import ru.hwAtm.account.Account;
+import ru.hwAtm.safe.Safe;
+import ru.hwAtm.banknote.Banknote;
+import ru.hwAtm.atm.atmImpl.SafeAtm;
+import ru.hwAtm.safe.safeImpl.SimpleAtm;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

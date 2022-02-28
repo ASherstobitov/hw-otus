@@ -1,8 +1,8 @@
-package ru.atm.atm.atmImpl;
+package ru.hwAtm.atm.atmImpl;
 
-import ru.atm.banknote.Banknote;
-import ru.atm.exception.MyRuntimeException;
-import ru.atm.safe.Safe;
+import ru.hwAtm.banknote.Banknote;
+import ru.hwAtm.exception.MyRuntimeException;
+import ru.hwAtm.safe.Safe;
 
 import java.math.BigDecimal;
 import java.util.*;

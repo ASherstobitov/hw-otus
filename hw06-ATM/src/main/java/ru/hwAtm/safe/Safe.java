@@ -1,6 +1,6 @@
-package ru.atm.safe;
+package ru.hwAtm.safe;
 
-import ru.atm.banknote.Banknote;
+import ru.hwAtm.banknote.Banknote;
 
 import java.math.BigDecimal;
 import java.util.List;

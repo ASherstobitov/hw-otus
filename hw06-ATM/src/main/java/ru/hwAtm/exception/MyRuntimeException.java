@@ -1,4 +1,4 @@
-package ru.atm.exception;
+package ru.hwAtm.exception;
 
 public class MyRuntimeException extends RuntimeException {
 

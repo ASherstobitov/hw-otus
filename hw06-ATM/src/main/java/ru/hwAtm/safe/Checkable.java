@@ -1,4 +1,4 @@
-package ru.atm.safe;
+package ru.hwAtm.safe;
 
 public interface Checkable {
     void showBalance(String accountNumber);

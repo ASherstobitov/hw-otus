@@ -1,11 +1,11 @@
-package ru.atm.safe.safeImpl;
+package ru.hwAtm.safe.safeImpl;
 
-import ru.atm.account.Account;
-import ru.atm.banknote.Banknote;
-import ru.atm.safe.Checkable;
-import ru.atm.exception.MyRuntimeException;
-import ru.atm.atm.ATM;
-import ru.atm.safe.Safe;
+import ru.hwAtm.account.Account;
+import ru.hwAtm.banknote.Banknote;
+import ru.hwAtm.safe.Checkable;
+import ru.hwAtm.exception.MyRuntimeException;
+import ru.hwAtm.atm.ATM;
+import ru.hwAtm.safe.Safe;
 
 import java.math.BigDecimal;
 import java.util.*;

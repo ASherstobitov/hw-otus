@@ -1,4 +1,4 @@
-package ru.atm.account;
+package ru.hwAtm.account;
 
 import java.math.BigDecimal;
 

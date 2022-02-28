@@ -1,4 +1,4 @@
-package ru.atm.banknote;
+package ru.hwAtm.banknote;
 
 public class Banknote {
 
