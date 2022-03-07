@@ -2,10 +2,11 @@ package ru.hwAtm;
 
 
 import ru.hwAtm.account.Account;
+import ru.hwAtm.bank.bankImpl.Bank;
 import ru.hwAtm.safe.Safe;
 import ru.hwAtm.banknote.Banknote;
-import ru.hwAtm.atm.atmImpl.SafeAtm;
-import ru.hwAtm.safe.safeImpl.SimpleAtm;
+import ru.hwAtm.safe.safeImpl.SimpleSafe;
+import ru.hwAtm.atm.atmImpl.SimpleAtm;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -25,10 +26,11 @@ public class Demo {
                 new Account("44444", new BigDecimal(500), "rub")
         );
 
+        Bank bank = new Bank(accounts);
 
-        Safe safe = new SafeAtm();
+        Safe safe = new SimpleSafe();
 
-        SimpleAtm atm = new SimpleAtm(safe, accounts);
+        SimpleAtm atm = new SimpleAtm(safe, bank);
 
         safe.uploadBanknotes(new Banknote(100, "rub"), 100);
         safe.uploadBanknotes(new Banknote(500, "rub"), 100);

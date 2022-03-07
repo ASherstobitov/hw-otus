@@ -1,4 +1,4 @@
-package ru.hwAtm.atm.atmImpl;
+package ru.hwAtm.safe.safeImpl;
 
 import ru.hwAtm.banknote.Banknote;
 import ru.hwAtm.exception.MyRuntimeException;
@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
-public class SafeAtm implements Safe {
+public class SimpleSafe implements Safe {
 
     private final Map<Banknote, Integer> slots;
 
@@ -17,12 +17,12 @@ public class SafeAtm implements Safe {
 
     private final Logger logger;
 
-    public SafeAtm() {
+    public SimpleSafe() {
         this.slots = new TreeMap<>(
                 Comparator.comparing(Banknote::getCurrency)
                         .thenComparing(Banknote::getNote).reversed());
 
-        this.logger = Logger.getLogger(SafeAtm.class.getName());
+        this.logger = Logger.getLogger(SimpleSafe.class.getName());
     }
 
     @Override

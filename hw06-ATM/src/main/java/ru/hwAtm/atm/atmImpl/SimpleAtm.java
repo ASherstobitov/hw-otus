@@ -1,10 +1,12 @@
-package ru.hwAtm.safe.safeImpl;
+package ru.hwAtm.atm.atmImpl;
 
-import ru.hwAtm.account.Account;
+
+import ru.hwAtm.atm.Checkable;
+import ru.hwAtm.atm.Giveable;
+import ru.hwAtm.atm.Takeable;
+import ru.hwAtm.bank.bankImpl.Bank;
 import ru.hwAtm.banknote.Banknote;
-import ru.hwAtm.safe.Checkable;
 import ru.hwAtm.exception.MyRuntimeException;
-import ru.hwAtm.atm.ATM;
 import ru.hwAtm.safe.Safe;
 
 import java.math.BigDecimal;
@@ -12,17 +14,17 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-public class SimpleAtm implements ATM, Checkable {
+public class SimpleAtm implements Giveable, Takeable, Checkable {
 
     private final Safe safe;
 
-    private final List<Account> accounts;
+    private final Bank bank;
 
     private final Logger logger;
 
-    public SimpleAtm(Safe safe, List<Account> accounts) {
+    public SimpleAtm(Safe safe, Bank bank) {
         this.safe = safe;
-        this.accounts = accounts;
+        this.bank = bank;
         this.logger = Logger.getLogger(SimpleAtm.class.getName());
     }
 
@@ -35,7 +37,7 @@ public class SimpleAtm implements ATM, Checkable {
 
         var sum = banknotes.stream().mapToInt(Banknote::getNote).sum();
 
-        addMoney(accountNumber, sum);
+        bank.addMoney(accountNumber, sum);
 
         banknotes.forEach(safe::add);
     }
@@ -44,7 +46,7 @@ public class SimpleAtm implements ATM, Checkable {
     @Override
     public List<Banknote> giveMoney(String accountNumber, BigDecimal amount) {
 
-        if (isUnableAccountExtract(accountNumber, amount, accounts)) {
+        if (isUnableAccountExtract(accountNumber, amount)) {
             throw new MyRuntimeException("The required amount more then the sum on the account");
         }
         if (isNotEnoughMoneyInAtm(safe, amount)) {
@@ -54,21 +56,19 @@ public class SimpleAtm implements ATM, Checkable {
             throw new MyRuntimeException("The amount should be multiple to 100");
         }
 
-        withDrawMoney(accountNumber, amount);
+        bank.withDrawMoney(accountNumber, amount);
 
         return safe.giveMoney(accountNumber, amount);
     }
 
     @Override
     public void showBalance(String accountNumber) {
-        accounts.stream().filter(e ->
+        bank.getAccounts().stream().filter(e ->
                         accountNumber.equals(e.getAccountNumber()))
                 .forEach(e -> logger.info(e.toString()));
-
     }
 
-
-    public static boolean isNotEnoughMoneyInAtm(Safe safe, BigDecimal amount) {
+    private static boolean isNotEnoughMoneyInAtm(Safe safe, BigDecimal amount) {
         var sum = safe.getSlots().entrySet()
                 .stream()
                 .mapToInt(e -> e.getKey().getNote() * e.getValue())
@@ -76,7 +76,7 @@ public class SimpleAtm implements ATM, Checkable {
         return new BigDecimal(sum).compareTo(amount) < 0;
     }
 
-    public static boolean isMultipleAmount(BigDecimal amount) {
+    private static boolean isMultipleAmount(BigDecimal amount) {
         return amount.intValue() % 100 == 0;
     }
 
@@ -88,28 +88,11 @@ public class SimpleAtm implements ATM, Checkable {
         return !banknotes.stream().allMatch(e -> safe.getSlots().containsKey(e));
     }
 
-    private boolean isUnableAccountExtract(String accountNumber, BigDecimal amount, List<Account> accounts) {
+    private boolean isUnableAccountExtract(String accountNumber, BigDecimal amount) {
         AtomicInteger result = new AtomicInteger();
-        findAccount(accountNumber, accounts)
+        bank.findAccount(accountNumber)
                 .ifPresent(e -> result.set(e.getAmount().compareTo(amount)));
         var boolRes = result.get() >= 0;
         return !boolRes;
     }
-
-    private Optional<Account> findAccount(String accountNumber, List<Account> accounts) {
-        return accounts.stream()
-                .filter(e -> accountNumber.equals(e.getAccountNumber()))
-                .findFirst();
-    }
-
-    private void addMoney(String accountNumber, int sum) {
-        findAccount(accountNumber, accounts)
-                .ifPresent(en -> en.setAmount(en.getAmount().add(new BigDecimal(sum))));
-    }
-
-    private void withDrawMoney(String accountNumber, BigDecimal amount) {
-        findAccount(accountNumber, accounts)
-                .ifPresent(en -> en.setAmount(en.getAmount().subtract(amount)));
-    }
-
 }
