@@ -4,25 +4,31 @@ import ru.otus.listener.Listener;
 import ru.otus.model.Message;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class HistoryListener implements Listener, HistoryReader {
 
-   private final Set<Message> messageSet;
+   private final Map<Long, Message> messageMap;
 
-    public HistoryListener(Set<Message> messageSet) {
-        this.messageSet = messageSet;
+   private final AtomicLong idGenerator;
+
+    public HistoryListener() {
+        this.messageMap = new HashMap<>();
+        this.idGenerator = new AtomicLong();
     }
 
     @Override
     public void onUpdated(Message msg) {
-        messageSet.add(msg);
+        messageMap.put(msg.getId(), new Message(msg));
     }
 
     @Override
     public Optional<Message> findMessageById(long id) {
 
-        return messageSet.stream()
-                .filter(e -> e.getId() == id)
+        return messageMap.entrySet()
+                .stream()
+                .filter(e -> e.getKey() == id)
+                .map(Map.Entry::getValue)
                 .findFirst();
     }
 }

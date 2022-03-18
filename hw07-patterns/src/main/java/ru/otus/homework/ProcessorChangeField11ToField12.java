@@ -1,6 +1,7 @@
-package ru.otus.processor;
+package ru.otus.homework;
 
 import ru.otus.model.Message;
+import ru.otus.processor.Processor;
 
 public class ProcessorChangeField11ToField12 implements Processor {
 

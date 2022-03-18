@@ -1,14 +1,13 @@
 package ru.otus;
 
 import ru.otus.handler.ComplexProcessor;
+import ru.otus.homework.ProcessorChangeField11ToField12;
+import ru.otus.homework.ProcessorEvenSecThrowException;
 import ru.otus.listener.homework.HistoryListener;
 import ru.otus.model.Message;
 import ru.otus.model.ObjectForMessage;
-import ru.otus.processor.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class HomeWork {
@@ -28,11 +27,15 @@ public class HomeWork {
 
     public static void main(String[] args) {
 
-        var processors = List.of(new ProcessorChangeField11ToField12(),
-                new ProcessorEvenSecThrowException(LocalDateTime::now));
+        var processorEvenSecThrowException = new ProcessorEvenSecThrowException();
 
-        var complexProcessor = new ComplexProcessor(processors, ex -> {});
-        var historyListener = new HistoryListener(new HashSet<>());
+        var processorChangeField11ToField12 = new ProcessorChangeField11ToField12();
+
+        var processors = List.of(processorEvenSecThrowException,
+        processorChangeField11ToField12);
+
+        var complexProcessor = new ComplexProcessor(processors, ex -> { });
+        var historyListener = new HistoryListener();
 
         var field12 = "field12";
         var field11 = "field11";
@@ -57,17 +60,8 @@ public class HomeWork {
 
         var result = complexProcessor.handle(message);
 
-        var processorEvenSecThrowException = new ProcessorEvenSecThrowException(LocalDateTime::now);
-
-        var processorChangeField11ToField12 = new ProcessorChangeField11ToField12();
-
         processorChangeField11ToField12.process(message);
 
-        try {
-        processorEvenSecThrowException.process(message);
-        } catch (RuntimeException exc) {
-            System.out.println("Caught the exception: " + exc.getMessage());
-        }
 
         System.out.println("result: " + result);
 

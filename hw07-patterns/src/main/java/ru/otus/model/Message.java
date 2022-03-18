@@ -38,6 +38,14 @@ public class Message {
         this.field13 = field13;
     }
 
+
+    public Message(Message message) {
+        this(message.getId(), message.getField1(), message.getField2(), message.getField3(), message.getField4(),
+                message.getField5(), message.getField6(), message.getField7(), message.getField8(), message.getField9(),
+                message.getField10(), message.getField11(), message.getField11(), new ObjectForMessage(message.getField13()));
+    }
+
+
     public long getId() {
         return id;
     }
