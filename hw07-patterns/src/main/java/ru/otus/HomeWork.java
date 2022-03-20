@@ -1,12 +1,13 @@
 package ru.otus;
 
 import ru.otus.handler.ComplexProcessor;
-import ru.otus.homework.ProcessorChangeField11ToField12;
-import ru.otus.homework.ProcessorEvenSecThrowException;
+import ru.otus.listener.homework.ProcessorChangeField11ToField12;
+import ru.otus.listener.homework.ProcessorEvenSecThrowException;
 import ru.otus.listener.homework.HistoryListener;
 import ru.otus.model.Message;
 import ru.otus.model.ObjectForMessage;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class HomeWork {
 
     public static void main(String[] args) {
 
-        var processorEvenSecThrowException = new ProcessorEvenSecThrowException();
+        var processorEvenSecThrowException = new ProcessorEvenSecThrowException(() -> LocalTime.of(11, 11, 11));
 
         var processorChangeField11ToField12 = new ProcessorChangeField11ToField12();
 

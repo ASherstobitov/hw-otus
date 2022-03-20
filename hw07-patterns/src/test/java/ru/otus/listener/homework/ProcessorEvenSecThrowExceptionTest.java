@@ -1,8 +1,10 @@
-package ru.otus.homework;
+package ru.otus.listener.homework;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.model.Message;
+
+import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,7 +15,7 @@ class ProcessorEvenSecThrowExceptionTest {
     @DisplayName("Тестируем процесс по выбрасыванию исключения")
     void processorEvenSecThrowExceptionTest() {
 
-        var processorEvenSecThrowException = new ProcessorEvenSecThrowException();
+        var processorEvenSecThrowException = new ProcessorEvenSecThrowException(() -> LocalTime.of(1, 1, 1));
 
         var field1 = "field1";
 
@@ -24,14 +26,11 @@ class ProcessorEvenSecThrowExceptionTest {
                 .field1(field1)
                 .build();
 
-        var runtimeException = assertThrows(RuntimeException.class, () -> {
-
-            while (true) {
-                processorEvenSecThrowException.process(message);
-            }
-        });
+        var runtimeException = assertThrows(RuntimeException.class, () ->
+                processorEvenSecThrowException.process(message));
 
         assertEquals(exceptionMessage, runtimeException.getMessage());
 
     }
+
 }

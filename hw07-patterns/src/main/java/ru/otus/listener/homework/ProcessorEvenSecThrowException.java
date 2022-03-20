@@ -1,18 +1,22 @@
-package ru.otus.homework;
+package ru.otus.listener.homework;
 
 import ru.otus.model.Message;
 import ru.otus.processor.Processor;
 
-import java.time.LocalDateTime;
-
 public class ProcessorEvenSecThrowException implements Processor {
+
+    private final TimeProvider timeProvider;
+
+    public ProcessorEvenSecThrowException(TimeProvider timeProvider) {
+        this.timeProvider = timeProvider;
+    }
 
     @Override
     public Message process(Message message) {
 
-        var date = LocalDateTime.now();
+        var time = timeProvider.getTime();
 
-        var second = date.getSecond();
+        var second = time.getSecond();
         if (second % 2 != 0) {
             throw new RuntimeException("This second is even!");
         }
