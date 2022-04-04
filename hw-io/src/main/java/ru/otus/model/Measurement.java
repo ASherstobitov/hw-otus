@@ -11,7 +11,8 @@ public final class Measurement {
 
 
 
-    public Measurement(String name, @JsonProperty("value") double value) {
+    @JsonCreator
+    public Measurement(@JsonProperty("name")String name, @JsonProperty("value") double value) {
         this.name = name;
         this.value = value;
     }
