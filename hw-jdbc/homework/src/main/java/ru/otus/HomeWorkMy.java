@@ -44,6 +44,11 @@ public class HomeWorkMy {
                 .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
         log.info("clientSecondSelected:{}", clientSecondSelected);
 
+        clientSecondSelected.setName("The name is updated");
+
+        dbServiceClient.saveClient(clientSecondSelected);
+        
+
         log.info("All clients:");
         dbServiceClient.findAll()
                 .forEach(e -> log.info("client:{}", e));
@@ -61,6 +66,10 @@ public class HomeWorkMy {
         var managerSecondSelected = dbServiceManager.getManager(managerSecond.getNo())
                 .orElseThrow(() -> new RuntimeException("Manager not found, id:" + managerSecond.getNo()));
         log.info("managerSecondSelected:{}", managerSecondSelected);
+
+        log.info("All managers:");
+        dbServiceManager.findAll()
+                .forEach(e -> log.info("manager:{}", e));
     }
 
     private static void flywayMigrations(DataSource dataSource) {

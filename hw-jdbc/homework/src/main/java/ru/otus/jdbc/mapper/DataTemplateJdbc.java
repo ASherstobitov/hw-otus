@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import ru.otus.core.repository.DataTemplate;
 import ru.otus.core.repository.DataTemplateException;
 import ru.otus.core.repository.executor.DbExecutor;
+import ru.otus.crm.model.Client;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -34,23 +35,12 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
             try {
                 Constructor<T> constructor = entitySQLMetaData.getEntityClassMetaData().getConstructor();
 
-                List <Field>allFields = entitySQLMetaData.getEntityClassMetaData().getAllFields();
-                Object[] args = new Object[allFields.size()];
+                List<Field> allFields = entitySQLMetaData.getEntityClassMetaData().getAllFields();
+
                 T instance = null;
 
-
                 if (rs.next()) {
-
-                for (int i = 0; i < allFields.size(); i++) {
-
-                    if (allFields.get(i).getType().equals(Long.class)) {
-                        args[i] = rs.getLong(allFields.get(i).getName());
-                    } else {
-                        args[i] = rs.getString(allFields.get(i).getName());
-                    }
-
-                }
-                    instance = constructor.newInstance(args);
+                    instance = constructor.newInstance(getArgs(rs, allFields));
                 }
 
                 return instance;
@@ -66,7 +56,39 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     @Override
     public List<T> findAll(Connection connection) {
 
-        throw new UnsupportedOperationException();
+        return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectAllSql(), Collections.emptyList(), rs -> {
+            var clientList = new ArrayList<T>();
+
+
+            try {
+                Constructor<T> constructor = entitySQLMetaData.getEntityClassMetaData().getConstructor();
+                List<Field> allFields = entitySQLMetaData.getEntityClassMetaData().getAllFields();
+
+                while (rs.next()) {
+
+                    T instance = constructor.newInstance(getArgs(rs, allFields));
+
+                    clientList.add(instance);
+                }
+                return clientList;
+            } catch (SQLException | InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+                throw new DataTemplateException(e);
+            }
+        }).orElseThrow(() -> new RuntimeException("Unexpected error"));
+    }
+
+    private Object[] getArgs(java.sql.ResultSet rs, List<Field> allFields) throws SQLException {
+        Object[] args = new Object[allFields.size()];
+        for (int i = 0; i < allFields.size(); i++) {
+
+            if (allFields.get(i).getType().equals(Long.class)) {
+                args[i] = rs.getLong(allFields.get(i).getName());
+            } else {
+                args[i] = rs.getString(allFields.get(i).getName());
+            }
+
+        }
+        return args;
     }
 
     @Override
@@ -75,25 +97,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         try {
             List<Field> fieldsWithoutId = entitySQLMetaData.getEntityClassMetaData().getFieldsWithoutId();
 
-            List<Object> list = new ArrayList<>();
-
-            fieldsWithoutId.forEach(e -> {
-
-                try {
-
-                    Field field = client.getClass().getDeclaredField(e.getName());
-                    field.setAccessible(true);
-                    Object o1 = field.get(client);
-
-                    list.add(o1);
-                } catch (Exception illegalAccessException) {
-                    illegalAccessException.printStackTrace();
-                }
-
-
-            });
-
-            return dbExecutor.executeStatement(connection, entitySQLMetaData.getInsertSql(), list);
+            return dbExecutor.executeStatement(connection, entitySQLMetaData.getInsertSql(), getFieldValues(client, fieldsWithoutId));
 
 
         } catch (Exception e) {
@@ -101,11 +105,43 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         }
     }
 
+    private List<Object> getFieldValues(T client, List<Field> fieldsWithoutId) {
+        List<Object> list = new ArrayList<>();
+
+        fieldsWithoutId.forEach(e -> {
+
+            try {
+
+                Field field = client.getClass().getDeclaredField(e.getName());
+                field.setAccessible(true);
+                Object o1 = field.get(client);
+
+                list.add(o1);
+            } catch (Exception illegalAccessException) {
+                illegalAccessException.printStackTrace();
+            }
+
+
+        });
+        return list;
+    }
+
     @Override
     public void update(Connection connection, T client) {
         try {
-//            dbExecutor.executeStatement(connection, entitySQLMetaData.getUpdateSql(),
-//                    List.of(client.getName(), client.getId()));
+
+            List<Field> fieldsWithoutId = entitySQLMetaData.getEntityClassMetaData().getFieldsWithoutId();
+
+            List<Object> fieldValues = getFieldValues(client, fieldsWithoutId);
+
+            Field idField = client.getClass().getDeclaredField(entitySQLMetaData.getEntityClassMetaData().getIdField().getName());
+
+            idField.setAccessible(true);
+            Object o1 = idField.get(client);
+            fieldValues.add(o1);
+            dbExecutor.executeStatement(connection, entitySQLMetaData.getUpdateSql(), fieldValues);
+
+
         } catch (Exception e) {
             throw new DataTemplateException(e);
         }
