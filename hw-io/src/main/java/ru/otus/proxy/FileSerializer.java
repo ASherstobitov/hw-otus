@@ -1,4 +1,4 @@
-package ru.otus.dataprocessor;
+package ru.otus.proxy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

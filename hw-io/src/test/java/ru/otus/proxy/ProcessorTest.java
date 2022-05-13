@@ -1,6 +1,5 @@
-package ru.otus.dataprocessor;
+package ru.otus.proxy;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

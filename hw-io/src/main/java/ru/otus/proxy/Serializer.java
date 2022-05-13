@@ -1,4 +1,4 @@
-package ru.otus.dataprocessor;
+package ru.otus.proxy;
 
 import java.io.IOException;
 import java.util.Map;

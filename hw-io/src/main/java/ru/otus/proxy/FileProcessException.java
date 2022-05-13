@@ -1,4 +1,4 @@
-package ru.otus.dataprocessor;
+package ru.otus.proxy;
 
 public class FileProcessException extends RuntimeException {
     public FileProcessException(Exception ex) {
