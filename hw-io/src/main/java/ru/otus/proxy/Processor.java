@@ -1,4 +1,4 @@
-package ru.otus.dataprocessor;
+package ru.otus.proxy;
 
 import ru.otus.model.Measurement;
 
