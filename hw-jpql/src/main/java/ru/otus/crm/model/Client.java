@@ -2,6 +2,7 @@ package ru.otus.crm.model;
 
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -30,6 +31,10 @@ public class Client implements Cloneable {
         this.name = name;
         this.address = address;
         this.phones = phones;
+
+        if (this.phones != null && !this.phones.isEmpty()) {
+            this.phones.forEach(phone -> phone.setClient(this));
+        }
     }
 
     public Client(String name) {
