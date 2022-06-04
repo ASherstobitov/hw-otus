@@ -5,7 +5,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "clients")
+@Table(name = "client")
 public class Client implements Cloneable {
 
     @Id
@@ -16,11 +16,13 @@ public class Client implements Cloneable {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
     
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "client",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL)
     private List<Phone> phones;
 
     public Client(Long id, String name, Address address, List<Phone> phones) {
@@ -47,11 +49,12 @@ public class Client implements Cloneable {
 
     @Override
     public Client clone() {
-        return new Client(this.id, this.name);
+        return new Client(this.id, this.name, this.address, this.phones);
     }
 
 
-    public Long getId() {
+    public Long getId()
+    {
         return id;
     }
 
@@ -66,6 +69,7 @@ public class Client implements Cloneable {
     public void setName(String name) {
         this.name = name;
     }
+
 
     public Address getAddress() {
         return address;
@@ -83,26 +87,6 @@ public class Client implements Cloneable {
         this.phones = phones;
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Client)) return false;
-
-        Client client = (Client) o;
-
-        if (getId() != null ? !getId().equals(client.getId()) : client.getId() != null) return false;
-        if (getName() != null ? !getName().equals(client.getName()) : client.getName() != null) return false;
-        return getAddress() != null ? getAddress().equals(client.getAddress()) : client.getAddress() == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
-        result = 31 * result + (getAddress() != null ? getAddress().hashCode() : 0);
-        return result;
-    }
 
     @Override
     public String toString() {

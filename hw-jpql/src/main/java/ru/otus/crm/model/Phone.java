@@ -3,8 +3,8 @@ package ru.otus.crm.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "phonees")
-public class Phone {
+@Table(name = "phone")
+public class Phone implements Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,15 +15,10 @@ public class Phone {
     private String number;
 
     @ManyToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "client_id",  unique = true, nullable = false)
+    @JoinColumn(name = "phone_id")
     private Client client;
 
     public Phone() {
-    }
-
-    public Phone(String number) {
-        this.id = null;
-        this.number = number;
     }
 
     public Phone(Long id, String number) {
@@ -31,20 +26,13 @@ public class Phone {
         this.number = number;
     }
 
-    public Long getId() {
-        return id;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
+    @Override
+    protected Phone clone() {
+        return new Phone(id, number);
     }
 
     @Override

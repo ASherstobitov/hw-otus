@@ -82,10 +82,6 @@ class HomeworkTest {
 
             var loadedClient = session.find(Client.class, 1L).clone();
 
-            var phone = session.find(Phone.class, 1L);
-
-            var address = session.find(Address.class, 1L);
-
             assertThat(loadedClient)
                     .usingRecursiveComparison()
                     .isEqualTo(client);
@@ -104,7 +100,7 @@ class HomeworkTest {
         cfg.setProperty("hibernate.connection.password", "");
 
         cfg.setProperty("hibernate.show_sql", "true");
-        cfg.setProperty("hibernate.format_sql", "false");
+        cfg.setProperty("hibernate.format_sql", "true");
         cfg.setProperty("hibernate.generate_statistics", "true");
 
         cfg.setProperty("hibernate.hbm2ddl.auto", "create");

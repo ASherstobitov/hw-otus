@@ -2,9 +2,9 @@ package ru.otus.crm.model;
 
 import javax.persistence.*;
 
-@Table(name = "addresses")
+@Table(name = "address")
 @Entity
-public class Address {
+public class Address implements Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,13 +14,10 @@ public class Address {
     @Column(name = "any_street")
     private String anyStreet;
 
+//    @OneToOne(mappedBy = "address", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private Client client;
+
     public Address() {
-    }
-
-
-    public Address(String anyStreet) {
-        this.id = null;
-        this.anyStreet = anyStreet;
     }
 
     public Address(Long id, String anyStreet) {
@@ -28,45 +25,8 @@ public class Address {
         this.anyStreet = anyStreet;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAnyStreet() {
-        return anyStreet;
-    }
-
-    public void setAnyStreet(String anyStreet) {
-        this.anyStreet = anyStreet;
-    }
-
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Address)) return false;
-
-        Address address = (Address) o;
-
-        if (getId() != null ? !getId().equals(address.getId()) : address.getId() != null) return false;
-        return getAnyStreet() != null ? getAnyStreet().equals(address.getAnyStreet()) : address.getAnyStreet() == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getAnyStreet() != null ? getAnyStreet().hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Address{" +
-                "id=" + id +
-                ", anyStreet='" + anyStreet + '\'' +
-                '}';
+    protected Address clone() throws CloneNotSupportedException {
+        return new Address(id, anyStreet);
     }
 }
