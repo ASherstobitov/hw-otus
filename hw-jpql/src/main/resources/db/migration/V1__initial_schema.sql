@@ -8,14 +8,15 @@ create table client
 
  */
 
-Для @GeneratedValue(strategy = GenerationType.SEQUENCE)
+-- Для @GeneratedValue(strategy = GenerationType.SEQUENCE)
 create sequence hibernate_sequence start with 1 increment by 1;
 
 create table phone
 (
     id   bigint not null primary key,
     client_id bigint,
-    number varchar(50)
+    number varchar(50),
+    phone_id bigint
 );
 
 create table address
@@ -30,5 +31,4 @@ create table client
     address_id bigint,
     name varchar(50)
 );
-
 

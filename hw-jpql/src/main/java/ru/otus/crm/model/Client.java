@@ -2,8 +2,10 @@ package ru.otus.crm.model;
 
 
 import javax.persistence.*;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "client")
@@ -17,13 +19,13 @@ public class Client implements Cloneable {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.REMOVE})
     @JoinColumn(name = "address_id")
     private Address address;
-    
+
     @OneToMany(mappedBy = "client",
             fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL)
+            cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.REMOVE})
     private List<Phone> phones;
 
     public Client(Long id, String name, Address address, List<Phone> phones) {
@@ -54,12 +56,29 @@ public class Client implements Cloneable {
 
     @Override
     public Client clone() {
-        return new Client(this.id, this.name, this.address, this.phones);
+            Client client = null;
+        try {
+            client = (Client)super.clone();
+        } catch (CloneNotSupportedException e) {
+            client = new Client(this.id, this.name);
+        }
+
+        if (this.address != null) {
+            client.address = this.address.clone();
+        }
+
+        client.phones  = Optional.ofNullable(this.phones)
+                .stream()
+                .flatMap(List::stream)
+                .map(Phone::clone)
+                .toList();
+
+
+        return client;
     }
 
 
-    public Long getId()
-    {
+    public Long getId() {
         return id;
     }
 
@@ -73,6 +92,11 @@ public class Client implements Cloneable {
 
     public void setName(String name) {
         this.name = name;
+
+        Optional.ofNullable(this.phones)
+                .stream()
+                .flatMap(List::stream)
+                .forEach(e -> e.setClient(this));
     }
 
 
@@ -92,6 +116,23 @@ public class Client implements Cloneable {
         this.phones = phones;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Client)) return false;
+
+        Client client = (Client) o;
+
+        if (getId() != null ? !getId().equals(client.getId()) : client.getId() != null) return false;
+        return getName() != null ? getName().equals(client.getName()) : client.getName() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        return result;
+    }
 
     @Override
     public String toString() {

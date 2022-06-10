@@ -7,26 +7,61 @@ import javax.persistence.*;
 public class Address implements Cloneable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private Long id;
 
     @Column(name = "any_street")
     private String anyStreet;
 
-//    @OneToOne(mappedBy = "address", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private Client client;
-
     public Address() {
     }
+
+
 
     public Address(Long id, String anyStreet) {
         this.id = id;
         this.anyStreet = anyStreet;
     }
 
-    @Override
-    protected Address clone() throws CloneNotSupportedException {
-        return new Address(id, anyStreet);
+    public Address(String anyStreet) {
+        this.anyStreet = anyStreet;
     }
+
+    @Override
+    protected Address clone() {
+        Address address = null;
+        try {
+            return (Address)super.clone();
+        } catch (CloneNotSupportedException e) {
+            return new Address(this.id, this.anyStreet);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Address)) return false;
+
+        Address address = (Address) o;
+
+        if (id != null ? !id.equals(address.id) : address.id != null) return false;
+        return anyStreet != null ? anyStreet.equals(address.anyStreet) : address.anyStreet == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (anyStreet != null ? anyStreet.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "id=" + id +
+                ", anyStreet='" + anyStreet + '\'' +
+                '}';
+    }
+
 }

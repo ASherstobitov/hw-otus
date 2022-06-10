@@ -11,14 +11,12 @@ import org.hibernate.engine.jdbc.spi.SqlStatementLogger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-//import ru.otus.crm.model.Address;
 import ru.otus.crm.model.Address;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Phone;
-//import ru.otus.crm.model.Phone;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 

@@ -4,6 +4,9 @@ import junit.framework.AssertionFailedError;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.base.AbstractHibernateTest;
+import ru.otus.crm.model.Address;
+import ru.otus.crm.model.Client;
+import ru.otus.crm.model.Phone;
 
 
 import java.util.List;
@@ -22,7 +25,7 @@ class DataTemplateHibernateTest extends AbstractHibernateTest {
 
         // Это надо раскомментировать, у выполненного ДЗ, все тесты должны проходить
         // Кроме удаления комментирования, тестовый класс менять нельзя
-/*
+
         var client = new Client(null, "Vasya", new Address(null, "AnyStreet"), List.of(new Phone(null, "13-555-22"),
                 new Phone(null, "14-666-333")));
 
@@ -92,7 +95,7 @@ class DataTemplateHibernateTest extends AbstractHibernateTest {
         assertThat(clientList.get(0))
                 .usingRecursiveComparison()
                 .isEqualTo(updatedClient);
- */
+
     }
 
 }
