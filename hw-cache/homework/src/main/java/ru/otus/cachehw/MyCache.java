@@ -1,41 +1,56 @@
 package ru.otus.cachehw;
 
 
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 public class MyCache<K, V> implements HwCache<K, V> {
 //Надо реализовать эти методы
 
-    private Map<K, V> weakHashMap = new WeakHashMap<>();
+    private final Map<K, V> weakHashMap = new WeakHashMap<>();
 
-    private HwListener<K, V> listener;
+    private final List<HwListener<K, V>> listeners = new ArrayList<>();
 
     @Override
     public void put(K key, V value) {
-        if (listener != null) {
-            listener.notify(key, value, "put");
-        }
+        notify(key, value, "put");
         weakHashMap.put(key, value);
     }
 
     @Override
     public void remove(K key) {
-        weakHashMap.remove(key);
+        var value = weakHashMap.remove(key);
+        notify(key, value, "remove");
     }
 
     @Override
     public V get(K key) {
-        return weakHashMap.get(key);
+
+        var value = weakHashMap.get(key);
+        notify(key, value, "get");
+        return value;
     }
 
     @Override
     public void addListener(HwListener<K, V> listener) {
-        this.listener = listener;
+        listeners.add(listener);
     }
 
     @Override
     public void removeListener(HwListener<K, V> listener) {
-        this.listener = listener;
+        listeners.remove(listener);
+    }
+
+    @Override
+    public List<V> getValues() {
+        return this.weakHashMap.entrySet()
+                .stream()
+                .peek(e -> notify(e.getKey(), e.getValue(), "get"))
+                .map(Map.Entry::getValue)
+                .toList();
+    }
+
+
+    private void notify(K key, V value, String action) {
+        listeners.forEach(e -> e.notify(key, value, action));
     }
 }

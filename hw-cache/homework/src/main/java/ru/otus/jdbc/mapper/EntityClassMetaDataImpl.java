@@ -7,12 +7,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     private final Class<T> tClass;
-
-    private final HwCache<String, Field> vtMyCache = new MyCache<>();
 
     public EntityClassMetaDataImpl(Class<T> tClass) {
        this.tClass = tClass;
@@ -28,7 +27,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     public Constructor<T> getConstructor() throws NoSuchMethodException {
 
         Class<?>[] fieldType = getAllFields().stream()
-                .map(e -> e.getType())
+                .map(Field::getType)
                 .toArray(Class<?>[]::new);
 
         return tClass.getDeclaredConstructor(fieldType);
@@ -45,7 +44,8 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     @Override
     public List<Field> getAllFields() {
-        return Arrays.asList(getGenericType().getDeclaredFields());
+        var fields = Arrays.asList(getGenericType().getDeclaredFields());
+        return fields;
     }
 
     @Override
@@ -58,6 +58,6 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     @Override
     public Class<T> getGenericType() {
-        return tClass;
+        return this.tClass;
     }
 }

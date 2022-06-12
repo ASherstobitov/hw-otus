@@ -3,9 +3,9 @@ package ru.otus.demo;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.crm.model.Client;
-import ru.otus.crm.datasource.DriverManagerDataSource;
 import ru.otus.core.repository.executor.DbExecutorImpl;
+import ru.otus.crm.datasource.DriverManagerDataSource;
+import ru.otus.crm.model.Client;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;

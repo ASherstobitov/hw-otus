@@ -13,8 +13,6 @@ import ru.otus.crm.service.DbServiceManagerImpl;
 import ru.otus.jdbc.mapper.*;
 
 import javax.sql.DataSource;
-import java.lang.reflect.Field;
-import java.util.List;
 
 public class HomeWorkMy {
     private static final String URL = "jdbc:postgresql://localhost:5430/demoDB";
