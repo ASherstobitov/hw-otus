@@ -32,11 +32,17 @@ public class Phone implements Cloneable {
 
     @Override
     protected Phone clone() {
+
+        Phone phone = null;
         try {
-            return (Phone)super.clone();
+            phone = (Phone) super.clone();
+
         } catch (CloneNotSupportedException e) {
-            return new Phone(this.id, this.number);
+            phone = new Phone(this.id, this.number);
         }
+        phone.client = new Client(this.client);
+
+        return phone;
     }
 
     public Long getId() {
@@ -58,6 +64,8 @@ public class Phone implements Cloneable {
     public Client getClient() {
         return client;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

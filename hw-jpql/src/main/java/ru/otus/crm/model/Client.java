@@ -28,6 +28,11 @@ public class Client implements Cloneable {
             cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.REMOVE})
     private List<Phone> phones;
 
+
+    public Client(Client client) {
+        this(client.getId(), client.getName(), client.getAddress().clone(), client.getPhones());
+    }
+
     public Client(Long id, String name, Address address, List<Phone> phones) {
         this.id = id;
         this.name = name;
