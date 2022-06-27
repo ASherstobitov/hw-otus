@@ -3,6 +3,7 @@ package ru.otus.dao;
 import ru.otus.model.User;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryUserDao implements UserDao {
 
@@ -22,6 +23,10 @@ public class InMemoryUserDao implements UserDao {
     @Override
     public Optional<User> findById(long id) {
         return Optional.ofNullable(users.get(id));
+    }
+
+    public List<User> getUsers() {
+        return new ArrayList<>(users.values());
     }
 
     @Override
