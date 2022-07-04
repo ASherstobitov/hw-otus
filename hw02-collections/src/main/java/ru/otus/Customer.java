@@ -57,6 +57,7 @@ public class Customer {
     }
 
     public Customer(Customer another) {
+
         this(another.getId(), another.getName(), another.getScores());
     }
 }
