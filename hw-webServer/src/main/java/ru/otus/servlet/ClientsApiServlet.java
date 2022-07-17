@@ -1,26 +1,28 @@
 package ru.otus.servlet;
 
 import com.google.gson.Gson;
-import ru.otus.model.User;
-import ru.otus.dao.UserDao;
-
+import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import ru.otus.crm.service.api.DBServiceClient;
+import ru.otus.crm.model.Client;
+
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 
 
-public class UsersApiServlet extends HttpServlet {
+public class ClientsApiServlet extends HttpServlet {
 
     private static final int ID_PATH_PARAM_POSITION = 1;
 
-    private final UserDao userDao;
+    private final DBServiceClient dbServiceClient;
     private final Gson gson;
 
-    public UsersApiServlet(UserDao userDao, Gson gson) {
-        this.userDao = userDao;
+    public ClientsApiServlet(DBServiceClient dbServiceClient, Gson gson) {
+        this.dbServiceClient = dbServiceClient;
         this.gson = gson;
     }
 
@@ -32,16 +34,28 @@ public class UsersApiServlet extends HttpServlet {
         String jsonResponse = "";
 
         if (id == null)  {
-            List<User> userList = userDao.getUsers();
-            jsonResponse = gson.toJson(userList);
+            List<Client> clientList = dbServiceClient.findAll();
+            jsonResponse = gson.toJson(clientList);
         } else {
-            User user = userDao.findById(id).orElse(null);
-            jsonResponse = gson.toJson(user);
+            Client client = dbServiceClient.getClient(id).orElse(null);
+            jsonResponse = gson.toJson(client);
         }
 
         response.setContentType("application/json;charset=UTF-8");
         ServletOutputStream out = response.getOutputStream();
         out.print(jsonResponse);
+    }
+
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try (BufferedReader reader = req.getReader()) {
+            Client client = gson.fromJson(reader, Client.class);
+
+            Client tmpClient = dbServiceClient.saveClient(client);
+            System.out.println(tmpClient);
+            resp.getOutputStream().print(gson.toJson(tmpClient));
+        }
     }
 
     private Long extractIdFromRequest(HttpServletRequest request) {

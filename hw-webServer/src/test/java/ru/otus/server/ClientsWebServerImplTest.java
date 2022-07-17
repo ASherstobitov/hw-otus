@@ -3,8 +3,8 @@ package ru.otus.server;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.*;
-import ru.otus.dao.UserDao;
-import ru.otus.model.User;
+import ru.otus.crm.service.api.DBServiceUser;
+import ru.otus.crm.model.User;
 import ru.otus.services.TemplateProcessor;
 import ru.otus.services.UserAuthService;
 
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
 import static ru.otus.server.utils.WebServerHelper.*;
 
 @DisplayName("Тест сервера должен ")
-class UsersWebServerImplTest {
+class ClientsWebServerImplTest {
 
     private static final int WEB_SERVER_PORT = 8989;
     private static final String WEB_SERVER_URL = "http://localhost:" + WEB_SERVER_PORT + "/";
@@ -34,7 +34,7 @@ class UsersWebServerImplTest {
     private static final String INCORRECT_USER_LOGIN = "BadUser";
 
     private static Gson gson;
-    private static UsersWebServer webServer;
+    private static ClientsWebServer webServer;
     private static HttpClient http;
 
     @BeforeAll
@@ -42,15 +42,15 @@ class UsersWebServerImplTest {
         http = HttpClient.newHttpClient();
 
         TemplateProcessor templateProcessor = mock(TemplateProcessor.class);
-        UserDao userDao = mock(UserDao.class);
+        DBServiceUser DBServiceUser = mock(DBServiceUser.class);
         UserAuthService userAuthService = mock(UserAuthService.class);
 
         given(userAuthService.authenticate(DEFAULT_USER_LOGIN, DEFAULT_USER_PASSWORD)).willReturn(true);
         given(userAuthService.authenticate(INCORRECT_USER_LOGIN, DEFAULT_USER_PASSWORD)).willReturn(false);
-        given(userDao.findById(DEFAULT_USER_ID)).willReturn(Optional.of(DEFAULT_USER));
+        given(DBServiceUser.findById(DEFAULT_USER_ID)).willReturn(Optional.of(DEFAULT_USER));
 
         gson = new GsonBuilder().serializeNulls().create();
-        webServer = new UsersWebServerWithFilterBasedSecurity(WEB_SERVER_PORT, userAuthService, userDao, gson, templateProcessor);
+        webServer = new ClientsWebServerWithFilterBasedSecurity(WEB_SERVER_PORT, userAuthService, DBServiceUser, gson, templateProcessor);
         webServer.start();
     }
 

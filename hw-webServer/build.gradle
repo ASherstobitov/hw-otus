@@ -2,10 +2,17 @@ plugins {
     id 'java'
 }
 
-sourceCompatibility = JavaVersion.VERSION_13
-targetCompatibility = JavaVersion.VERSION_13
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 dependencies {
+
+    implementation("ch.qos.logback:logback-classic")
+    implementation("org.hibernate:hibernate-core")
+    implementation('org.flywaydb:flyway-core')
+
+    implementation("org.postgresql:postgresql")
+    implementation 'org.projectlombok:lombok:1.18.20'
     implementation("ch.qos.logback:logback-classic")
     implementation("com.google.code.gson:gson:${Versions.gson}")
 
@@ -22,6 +29,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testImplementation("org.assertj:assertj-core")
     testImplementation("org.mockito:mockito-junit-jupiter")
+
+
+
 }
 
 test {
