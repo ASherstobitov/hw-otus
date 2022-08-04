@@ -19,4 +19,11 @@ public interface Versions {
     String freemarker = "2.3.31";
 
     String reflections = "0.10.2";
+
+
+    String sockjs = "1.5.1";
+    String stomp = "2.3.4";
+    String bootstrap = "5.1.3";
+    String springDocOpenapiUi = "1.6.7";
+    String jsr305 = "3.0.2";
 }
