@@ -1,13 +1,15 @@
 package ru.otus.proxy;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.stream.Collector;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MyProxy {
 
+
+    private static List<Method> methods;
     private MyProxy() {
     }
 
@@ -23,16 +25,20 @@ public class MyProxy {
 
         MyInvocationHandler(CalculatorInterface calculatorInterface) {
             this.calculatorInterface = calculatorInterface;
+
+
+            methods = Arrays.stream(calculatorInterface.getClass().getMethods())
+                    .filter(e -> Arrays.stream(e.getDeclaredAnnotations()).anyMatch(a -> a.annotationType().equals(Log.class)))
+                    .toList();
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-            Arrays.stream(calculatorInterface.getClass().getMethods())
+
+            methods.stream()
                     .filter(e -> e.getName().equals(method.getName())
-                    && Arrays.equals(e.getParameterTypes(), method.getParameterTypes()))
-                    .flatMap(e -> Arrays.stream(e.getDeclaredAnnotations()))
-                    .filter(e -> e.annotationType().equals(Log.class))
+                            && Arrays.equals(e.getParameterTypes(), method.getParameterTypes()))
                     .findFirst()
                     .ifPresent(e -> System.out.printf("============>The method name: %s, param types : (%s)  \n",
 

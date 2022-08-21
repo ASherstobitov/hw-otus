@@ -9,6 +9,7 @@ public class ProxyDemo {
 
         CalculatorInterface calculator = MyProxy.createCalculator();
         calculator.sum(10, 20);
+        calculator.distinct(20, 10);
 
     }
 }
