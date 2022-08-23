@@ -7,61 +7,24 @@ import javax.persistence.*;
 public class Address implements Cloneable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "any_street")
-    private String anyStreet;
+    @Column(name = "street")
+    private String street;
 
     public Address() {
     }
 
-
-
-    public Address(Long id, String anyStreet) {
+    public Address(Long id, String street) {
         this.id = id;
-        this.anyStreet = anyStreet;
-    }
-
-    public Address(String anyStreet) {
-        this.anyStreet = anyStreet;
+        this.street = street;
     }
 
     @Override
-    protected Address clone() {
-        Address address = null;
-        try {
-            return (Address)super.clone();
-        } catch (CloneNotSupportedException e) {
-            return new Address(this.id, this.anyStreet);
-        }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Address)) return false;
-
-        Address address = (Address) o;
-
-        if (id != null ? !id.equals(address.id) : address.id != null) return false;
-        return anyStreet != null ? anyStreet.equals(address.anyStreet) : address.anyStreet == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (anyStreet != null ? anyStreet.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Address{" +
-                "id=" + id +
-                ", anyStreet='" + anyStreet + '\'' +
-                '}';
+    public Address clone() {
+        return new Address(id, street);
     }
 
 }
