@@ -15,3 +15,6 @@ include 'hw-cache'
 include 'hw-data-jdbc'
 include 'concurrentCollections'
 include 'hw-grpc'
+include 'hw-flux:client'
+include 'hw-flux:server'
+
